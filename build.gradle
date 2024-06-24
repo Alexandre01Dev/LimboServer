@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+}
+
+group = 'be.alexandre01.limbo';
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'io.netty:netty-all:4.1.68.Final'
+    implementation 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    // gson
+    implementation 'com.google.code.gson:gson:2.8.8'
+}
+
+test {
+    useJUnitPlatform()
+}
