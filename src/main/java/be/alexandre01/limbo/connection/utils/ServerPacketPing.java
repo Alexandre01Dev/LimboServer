@@ -54,8 +54,8 @@ public class ServerPacketPing {
 
     private String versionName;
     private int protocol;
-    private int maxPlayers;
-    private int onlinePlayers;
+    private Integer maxPlayers;
+    private Integer onlinePlayers;
     private String playerName;
     private String playerId;
     private String description;
@@ -74,12 +74,13 @@ public class ServerPacketPing {
             stringBuilder.append("        \"name\": \"").append(versionName).append("\",\n");
         stringBuilder.append("        \"protocol\": ").append(protocol).append("\n");
         stringBuilder.append("    },\n");
-
-        stringBuilder.append("    \"players\": {\n");
-        stringBuilder.append("        \"max\": ").append(maxPlayers).append(",\n");
-        stringBuilder.append("        \"online\": ").append(onlinePlayers).append(",\n");
+        if(maxPlayers != null && onlinePlayers != null){
+            stringBuilder.append("    \"players\": {\n");
+            stringBuilder.append("        \"max\": ").append(maxPlayers).append(",\n");
+            stringBuilder.append("        \"online\": ").append(onlinePlayers).append(",\n");
 
             stringBuilder.append("        \"sample\": [");
+
         if(playerName != null && playerId != null){
             stringBuilder.append("\n");
             stringBuilder.append("            {\n");
@@ -90,8 +91,12 @@ public class ServerPacketPing {
         stringBuilder.append("]\n");
 
         stringBuilder.append("    }");
+        }
         if(description != null){
-            stringBuilder.append(",\n");
+            if(maxPlayers != null && onlinePlayers != null){
+                stringBuilder.append(",\n");
+            }
+           // stringBuilder.append(",\n");
             stringBuilder.append("    \"description\": {\n");
             stringBuilder.append("        \"text\": \"").append(description).append("\"\n");
             stringBuilder.append("    }");

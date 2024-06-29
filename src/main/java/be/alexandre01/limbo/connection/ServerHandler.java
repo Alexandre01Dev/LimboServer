@@ -5,6 +5,7 @@ import be.alexandre01.limbo.connection.packet.in.PacketINHandshake;
 import be.alexandre01.limbo.connection.packet.out.PacketOutPing;
 import be.alexandre01.limbo.connection.utils.ServerPacketPing;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 /*
@@ -81,9 +82,16 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
                     //1530+26=1555
 
                     System.out.println("Sending a ping packet with json: " + json);
+
+                    ctx.channel().remoteAddress().toString();
                     ctx.writeAndFlush(new PacketOutPing(json));
 
             }
         }
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        System.out.println("erreur");
     }
 }

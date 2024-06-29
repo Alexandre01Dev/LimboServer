@@ -9,6 +9,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /*
@@ -21,7 +22,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet, ByteBuf byteBuf) throws Exception {
-        System.out.println("Encoding packet: " + packet.getLength());
+        System.out.println("Encoding packet: " + (packet.getLength()+ Main.increment));
         writeVarInt(packet.getLength()+ Main.increment,byteBuf);
         writeVarInt(packet.getId(),byteBuf);
         packet.getDatas().forEach(o -> {
@@ -36,26 +37,15 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
                 writeVarLong((Long)o,byteBuf);
             }
         });
-
-
-
-        System.out.println("Packet encoded: " + packet.getClass().getSimpleName() + " with datas: " + packet.getDatas());
+        System.out.println("Packet encoded: " + packet.getClass().getSimpleName() + " with datas: " + byteBuf.toString(StandardCharsets.ISO_8859_1));
     }
 
-    public void writeVarInt(int value, ByteBuf byteBuf) {
-        int i = 0;
-        while (true) {
-            if ((value & ~SEGMENT_BITS) == 0) {
-                byteBuf.writeByte(value);
-                return;
-            }
-
-            byteBuf.writeByte((value & SEGMENT_BITS) | CONTINUE_BIT);
-            System.out.println("Writing byte: " + new String(new byte[]{(byte) ((value & SEGMENT_BITS) | CONTINUE_BIT)}) + " for value: " + value + " and i: " + i);
-
-            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
+    public static void writeVarInt(int value,ByteBuf byteBuf) {
+        while ((value & ~0x7F) != 0) {
+            byteBuf.writeByte((value & 0x7F) | 0x80);
             value >>>= 7;
         }
+        byteBuf.writeByte(value);
     }
     public void writeVarLong(long value, ByteBuf byteBuf) {
         while (true) {

@@ -2,6 +2,7 @@ package be.alexandre01.limbo.connection.packet;
 
 import lombok.Getter;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Vector;
 
@@ -17,14 +18,17 @@ public class Packet {
 
     public Packet(byte id) {
         this.id = id;
-       // length += String.valueOf(id).length();
+        length += String.valueOf(id).length();
     }
 
     private void writeString(String s){
         System.out.println(" string size: " +  (String.valueOf(s.length()).length()));
-        datas.add(s.length());
-        datas.add(s);
-        length += s.length() + (String.valueOf(s.length()).length());
+        String utf8 = new String(s.getBytes(), StandardCharsets.UTF_8);
+
+        int utf16Length = utf8.codePointCount(0, utf8.length());
+        datas.add(utf16Length);
+        datas.add(utf8);
+        length += utf8.length() + String.valueOf(utf16Length).length();
     }
 
 
